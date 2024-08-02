@@ -12,7 +12,12 @@ import pathlib
 import subprocess
 
 def less_to_CSS(path):
-    firstline = read_first_line(path)[2:]
+    firstline = read_first_line(path)
+
+    if not firstline.startswith('//'):
+      return
+
+    firstline = firstline[2:]
 
     options = {}
     for option in firstline.split(','):
@@ -41,9 +46,10 @@ def read_first_line(file_name):
         return file.readline()
 
 output = less_to_CSS(pathlib.Path(vim.eval('expand("%:p")')))
-output = output.decode('UTF-8')
 if output:
-  print(output)
+  output = output.decode('UTF-8')
+  if output:
+    print(output)
 
 EOF
 endfunction
