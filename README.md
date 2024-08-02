@@ -36,7 +36,7 @@ There are two mutually exclusive mandatory arguments:
 - `out: ./path/to/output.css` specifies the destination path for the compiled CSS file.
 - `main: ./path/to/main.less` specifies another Less file that will be compiled instead of this one.
   This is useful if this file is not intended for direct compilation and instead is a dependency
-  of the main file (like a `colors.less`).
+  of the main file (like a `colors.less`). This works recursively.
 
 Assuming both files are in the same folder:<br>
 *colors.less*:
@@ -73,6 +73,9 @@ Example using arbitrary arguments:
 ```less
 // out: main.css, lint, source-map: main-map.map
 ```
+
+When specifying additional arguments in a file that has a `main` instead of an `out`,
+they are merged with the arguments of the main file (recursively, if needed).
 
 
 ## Contribution

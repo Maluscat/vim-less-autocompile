@@ -11,7 +11,7 @@ import vim
 import pathlib
 import subprocess
 
-def less_to_CSS(path):
+def less_to_CSS(path, options = {}):
     firstline = read_first_line(path)
 
     if not firstline.startswith('//'):
@@ -19,7 +19,6 @@ def less_to_CSS(path):
 
     firstline = firstline[2:]
 
-    options = {}
     for option in firstline.split(','):
         if option == '\n':
             continue
@@ -29,7 +28,7 @@ def less_to_CSS(path):
     if 'main' in options:
         for main_file in options['main'].split('|'):
             main_file_path = path.parent / main_file
-            return less_to_CSS(main_file_path)
+            return less_to_CSS(main_file_path, options)
     elif 'out' in options:
         sourcemap = ('sourcemap' in options) and options['sourcemap']
         return subprocess.run([
