@@ -76,7 +76,7 @@ body {
 
 Any compilation errors will be accumulated and passed on to Vim.
 
-### Other arguments (TODO NOT IMPLEMENTED YET)
+### Other arguments
 Besides the mandatory arguments above, any other arguments of the `lessc` command line tool
 may be applied in the same manner.
 For readability (and laziness) purposes, only double-dash arguments may be specified,

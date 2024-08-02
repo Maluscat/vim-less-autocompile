@@ -42,13 +42,19 @@ def less_to_CSS(path, options = {}):
         out_file = options['out']
         del options['out']
 
-        sourcemap = ('sourcemap' in options) and options['sourcemap']
-        output = subprocess.run([
-            'lessc',
-            '--no-color',
-            str(path),
-            str(path.parent / out_file)
-        ], stderr=subprocess.PIPE).stderr
+        # Explicitly checking for non-empty string
+        if options['source-map']:
+          options['source-map'] = str(path.parent / options['source-map'])
+
+        less_args = [ '--' + name + ('=' + val if val else '')
+            for (name, val)
+            in options.items() ]
+        less_args.append('--no-color')
+        less_args.append(str(path))
+        less_args.append(str(path.parent / out_file))
+        less_args.insert(0, 'lessc')
+
+        output = subprocess.run(less_args, stderr=subprocess.PIPE).stderr
         if output:
           absolute_out_file = str(pathlib.Path(path.parent / out_file).resolve())
           result += 'Error compiling ' + absolute_out_file + ':\n'
