@@ -21,7 +21,7 @@ It is also recommended to have a Less file type (syntax highlighting) plugin ins
 ## Installation
 Install using your favorite Vim plugin manager. For example, using [vim-plug](https://github.com/junegunn/vim-plug):
 ```vim
-Plug 'maluscat/vim-less-autocompile'
+Plug 'Maluscat/vim-less-autocompile'
 ```
 
 
@@ -29,49 +29,63 @@ Plug 'maluscat/vim-less-autocompile'
 There is no global configuration (yet?). Everything is configured on a per-file basis:
 
 To use, simply put a comment on the first line of your Less file that specifies the
-configuration you want to use. It is a comma separated list of arguments that are passed
+configuration you want to use (see below). It is a comma separated list of arguments that are passed
 to the `lessc` command. An argument itself is denoted as a colon separated key-value pair.
 
-There are two mutually exclusive mandatory arguments:
-- `out: ./path/to/output.css` specifies the destination path for the compiled CSS file.
-- `main: ./path/to/main.less` specifies another Less file that will be compiled instead of this one.
-  This is useful if this file is not intended for direct compilation and instead is a dependency
-  of the main file (like a `colors.less`). This works recursively.
+### Mandatory arguments
+Every file that should be compiled must have one of two mandatory arguments: `out` or `main`.
 
-Assuming both files are in the same folder:<br>
+The `out` argument specifies the destination path for the CSS file
+that will get compiled on save.
+- `// out: ./path/to/output.css`
+
+You can also redirect the compilation to another file using the `main` argument instead
+of `out` (recursively, if needed).
+This is useful if the specified files are not intended for direct compilation
+because they are dependencies of the main file, which should be compiled instead.
+Multiple files are separated by a pipe without spaces:
+- `// main: ./path/to/main.less`
+- `// main: ./main1.less|../main2.less|main3.less`
+
+
+
+### Basic example
+Assuming both files are in the same folder:
+
 *colors.less*:
 ```less
-// main: main.less
+// main: styles.less
 @color: red;
 ```
-*main.less*:
+*styles.less*:
 ```less
-// out: main.css
-
+// out: styles.css
 @include 'colors.less';
 body {
   color: @color;
 }
 ```
-Now, when saving of any of the two files, it compiles to:<br>
-*main.css*
+Now, when saving of any of the two files, it compiles to:
+
+*styles.css*
 ```css
 body {
   color: red;
 }
 ```
 
-Any compilation errors will simply be passed on from `lessc` to Vim.
+Any compilation errors will be accumulated and passed on to Vim.
 
-### Other arguments
+### Other arguments (TODO NOT IMPLEMENTED YET)
 Besides the mandatory arguments above, any other arguments of the `lessc` command line tool
-may be applied in the same format.
+may be applied in the same manner.
 For readability (and laziness) purposes, only double-dash arguments may be specified,
-meaning `lint` is fine, but `l` (which are both options for `lessc`) will be nonsensical.
+meaning `lint` (from `lessc --lint`) is fine, but `l` (from `lessc -l`) will be nonsensical.
 
-Example using arbitrary arguments:
+The following will compile to a `./main.css` with the arguments `--lint --source-map=main-map.map`:
 ```less
 // out: main.css, lint, source-map: main-map.map
+...
 ```
 
 When specifying additional arguments in a file that has a `main` instead of an `out`,
