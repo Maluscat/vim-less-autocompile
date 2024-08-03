@@ -42,8 +42,7 @@ def less_to_CSS(path, options = {}):
         out_file = options['out']
         del options['out']
 
-        # Explicitly checking for non-empty string
-        if options['source-map']:
+        if 'source-map' in options and options['source-map']:
           options['source-map'] = str(path.parent / options['source-map'])
 
         less_args = [ '--' + name + ('=' + val if val else '')
